@@ -1,11 +1,11 @@
 // src/App.jsx
 import React, { useState } from 'react';
 import { Toaster } from 'react-hot-toast';
-import { Film, Tv, BookmarkCheck, Search as SearchIcon } from 'lucide-react';
+import { Film, Tv, BookmarkCheck, Upload } from 'lucide-react';
 import MoviePanel from './components/MoviePanel';
 import SeriesPanel from './components/SeriesPanel';
 import LibraryPanel from './components/LibraryPanel';
-
+import ManualUpload from './components/ManualUpload';
 
 function App() {
     const [activeTab, setActiveTab] = useState('movie');
@@ -14,6 +14,7 @@ function App() {
         { id: 'movie', label: 'Movies', icon: Film },
         { id: 'series', label: 'TV Series', icon: Tv },
         { id: 'library', label: 'Library', icon: BookmarkCheck },
+        { id: 'manual', label: 'Manual Upload', icon: Upload },
     ];
 
     return (
@@ -24,7 +25,7 @@ function App() {
                     <div className="flex items-center justify-between flex-wrap gap-4">
                         <div className="flex items-center space-x-3">
                             <div className="p-2 bg-red-600 rounded-xl">
-                                <SearchIcon className="w-6 h-6 text-white" />
+                                <Film className="w-6 h-6 text-white" />
                             </div>
                             <div>
                                 <h1 className="text-2xl font-bold text-white">Magnet Fetcher</h1>
@@ -61,6 +62,7 @@ function App() {
                 {activeTab === 'movie' && <MoviePanel />}
                 {activeTab === 'series' && <SeriesPanel />}
                 {activeTab === 'library' && <LibraryPanel />}
+                {activeTab === 'manual' && <ManualUpload />}
             </main>
 
             <Toaster 

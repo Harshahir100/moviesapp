@@ -3,6 +3,8 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import movieRoutes from './routes/movieRoutes.js';
 import seriesRoutes from './routes/seriesRoutes.js';
+import tmdbRoutes from './routes/tmdbRoutes.js';
+
 
 dotenv.config();
 
@@ -15,6 +17,7 @@ app.use(express.json({ limit: '50mb' }));
 // Routes
 app.use('/api/movies', movieRoutes);
 app.use('/api/series', seriesRoutes);
+app.use('/api/tmdb', tmdbRoutes);
 
 app.get('/api/health', (req, res) => {
     res.json({ status: 'OK', timestamp: new Date() });
