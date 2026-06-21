@@ -204,4 +204,43 @@ export class MovieController {
       res.status(500).json({ error: "Failed to fetch movies" });
     }
   }
+
+  // backend/src/controllers/movieController.js (Add this method)
+static async getMovieDetails(req, res) {
+    try {
+        const { id } = req.params;
+        
+        const result = await pool.query(`
+            SELECT 
+                m.*,
+                json_agg(
+                    json_build_object(
+                        'id', t.id,
+                        'title', t.torrent_title,
+                        'torrent_title', t.torrent_title,
+                        'magnet_link', t.magnet_link,
+                        'size', t.file_size_text,
+                        'quality', t.quality,
+                        'seeders', t.seeders,
+                        'leechers', t.leechers,
+                        'is_hindi_dubbed', t.is_hindi_dubbed,
+                        'source', t.source_site
+                    )
+                ) FILTER (WHERE t.id IS NOT NULL) as torrents
+            FROM tmdb_movies m
+            LEFT JOIN movie_torrents t ON m.id = t.movie_id
+            WHERE m.id = $1
+            GROUP BY m.id
+        `, [id]);
+        
+        if (result.rows.length === 0) {
+            return res.status(404).json({ error: 'Movie not found' });
+        }
+        
+        res.json({ success: true, data: result.rows[0] });
+    } catch (error) {
+        console.error('Error fetching movie details:', error);
+        res.status(500).json({ error: 'Failed to fetch movie details' });
+    }
+}
 }
