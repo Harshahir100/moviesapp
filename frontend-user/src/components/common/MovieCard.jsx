@@ -62,9 +62,9 @@ const MovieCard = ({ movie }) => {
                     </h3>
                     <div className="flex items-center justify-between text-xs text-gray-400 mt-0.5">
                         <span>{getYear()}</span>
-                        {movie.torrent_count > 0 && (
+                        {/* {movie.torrent_count > 0 && (
                             <span className="text-gray-500">{movie.torrent_count} torrents</span>
-                        )}
+                        )} */}
                     </div>
                 </div>
             </div>

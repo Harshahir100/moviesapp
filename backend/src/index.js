@@ -6,6 +6,7 @@ import movieRoutes from './routes/movieRoutes.js';
 import seriesRoutes from './routes/seriesRoutes.js';
 import tmdbRoutes from './routes/tmdbRoutes.js';
 import authRoutes from './routes/authRoutes.js';
+import searchRoutes from './routes/searchRoutes.js';  // Add this
 
 dotenv.config();
 
@@ -21,6 +22,8 @@ app.use('/api/auth', authRoutes);
 app.use('/api/movies', movieRoutes);
 app.use('/api/series', seriesRoutes);  // Added series routes
 app.use('/api/tmdb', tmdbRoutes);
+app.use('/api/search', searchRoutes);  // Add this
+
 
 // Health check
 app.get('/api/health', (req, res) => {

@@ -185,25 +185,85 @@ export class MovieController {
   }
 
   // Get all saved movies
-  static async getMovies(req, res) {
+// backend/src/controllers/movieController.js (Add pagination support)
+static async getMovies(req, res) {
     try {
-      const result = await pool.query(`
-                SELECT 
-                    m.*, 
-                    COUNT(mt.id) as torrent_count,
-                    COUNT(mt.id) FILTER (WHERE mt.is_hindi_dubbed = true) as hindi_dubbed_count
-                FROM tmdb_movies m
-                LEFT JOIN movie_torrents mt ON m.id = mt.movie_id
-                GROUP BY m.id
-                ORDER BY m.created_at DESC
-                LIMIT 50
-            `);
-      res.json({ success: true, data: result.rows });
+        const { 
+            limit = 20, 
+            offset = 0, 
+            sort = 'latest',
+            category,
+            quality,
+            language 
+        } = req.query;
+        
+        let query = `
+            SELECT 
+                m.*, 
+                COUNT(mt.id) as torrent_count,
+                COUNT(mt.id) FILTER (WHERE mt.is_hindi_dubbed = true) as hindi_dubbed_count
+            FROM tmdb_movies m
+            LEFT JOIN movie_torrents mt ON m.id = mt.movie_id
+            WHERE 1=1
+        `;
+        
+        const params = [];
+        let paramCounter = 1;
+        
+        // Apply filters
+        if (category) {
+            query += ` AND LOWER(m.title) LIKE $${paramCounter}`;
+            params.push(`%${category}%`);
+            paramCounter++;
+        }
+        
+        if (quality) {
+            query += ` AND EXISTS (SELECT 1 FROM movie_torrents mt2 WHERE mt2.movie_id = m.id AND mt2.quality = $${paramCounter})`;
+            params.push(quality);
+            paramCounter++;
+        }
+        
+        if (language === 'Hindi') {
+            query += ` AND EXISTS (SELECT 1 FROM movie_torrents mt2 WHERE mt2.movie_id = m.id AND mt2.is_hindi_dubbed = true)`;
+        }
+        
+        query += ` GROUP BY m.id`;
+        
+        // Sorting
+        if (sort === 'popularity') {
+            query += ` ORDER BY m.popularity DESC`;
+        } else if (sort === 'rating') {
+            query += ` ORDER BY m.vote_average DESC`;
+        } else if (sort === 'latest') {
+            query += ` ORDER BY m.release_date DESC NULLS LAST`;
+        }
+        
+        // Pagination
+        const countQuery = `SELECT COUNT(*) FROM (${query}) as count_query`;
+        const countResult = await pool.query(countQuery, params);
+        const total = parseInt(countResult.rows[0].count);
+        
+        query += ` LIMIT $${paramCounter} OFFSET $${paramCounter + 1}`;
+        params.push(parseInt(limit), parseInt(offset));
+        
+        const result = await pool.query(query, params);
+        
+        res.json({ 
+            success: true, 
+            data: result.rows,
+            pagination: {
+                total: total,
+                limit: parseInt(limit),
+                offset: parseInt(offset),
+                currentPage: Math.floor(parseInt(offset) / parseInt(limit)) + 1,
+                totalPages: Math.ceil(total / parseInt(limit))
+            }
+        });
     } catch (error) {
-      console.error("Fetch error:", error);
-      res.status(500).json({ error: "Failed to fetch movies" });
+        console.error('Fetch error:', error);
+        res.status(500).json({ error: 'Failed to fetch movies' });
     }
-  }
+}
 
   // backend/src/controllers/movieController.js (Add this method)
 static async getMovieDetails(req, res) {

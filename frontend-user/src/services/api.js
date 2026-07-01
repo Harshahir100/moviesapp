@@ -10,14 +10,23 @@ export const api = axios.create({
     },
 });
 
-// Get all movies with filters
+// Get all movies with filters and pagination
 export const getMovies = async (params = {}) => {
     try {
-        const response = await api.get('/movies/list', { params });
+        const response = await api.get('/movies/list', { 
+            params: {
+                limit: params.limit || 20,
+                offset: params.offset || 0,
+                sort: params.sort || 'latest',
+                category: params.category || null,
+                quality: params.quality || null,
+                language: params.language || null
+            }
+        });
         return response.data;
     } catch (error) {
         console.error('Error fetching movies:', error);
-        return { data: [] };
+        return { data: [], total: 0 };
     }
 };
 
@@ -35,7 +44,14 @@ export const getMovieDetails = async (id) => {
 // Get all series with filters
 export const getSeries = async (params = {}) => {
     try {
-        const response = await api.get('/series/list', { params });
+        const response = await api.get('/series/list', { 
+            params: {
+                limit: params.limit || 20,
+                offset: params.offset || 0,
+                sort: params.sort || 'popularity',
+                category: params.category || null
+            }
+        });
         return response.data;
     } catch (error) {
         console.error('Error fetching series:', error);
@@ -57,7 +73,9 @@ export const getSeriesDetails = async (id) => {
 // Search content
 export const searchContent = async (query) => {
     try {
-        const response = await api.get('/search', { params: { q: query } });
+        const response = await api.get('/search', { 
+            params: { q: query, limit: 30 } 
+        });
         return response.data;
     } catch (error) {
         console.error('Error searching:', error);

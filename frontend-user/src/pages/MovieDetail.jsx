@@ -1,7 +1,7 @@
 // frontend-user/src/pages/MovieDetail.jsx
 import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { getMovieDetails } from '../services/api';
+import { getMovieDetails } from '../services/api';  // This will now work
 import LoadingSpinner from '../components/common/LoadingSpinner';
 import { Star, Calendar, Clock, Film, Download, ArrowLeft, TrendingUp, Users, HardDrive } from 'lucide-react';
 import toast from 'react-hot-toast';
@@ -225,20 +225,20 @@ const MovieDetail = () => {
                                                                     <span className="text-base">{torrent.size}</span>
                                                                 </span>
                                                             )}
-                                                            {/* <span className="flex items-center space-x-1">
+                                                            <span className="flex items-center space-x-1">
                                                                 <TrendingUp size={16} className="text-green-500" />
                                                                 <span className="text-base">{torrent.seeders || 0} seeders</span>
                                                             </span>
                                                             <span className="flex items-center space-x-1">
                                                                 <Users size={16} className="text-yellow-500" />
                                                                 <span className="text-base">{torrent.leechers || 0} leechers</span>
-                                                            </span> */}
+                                                            </span>
                                                             {torrent.is_hindi_dubbed && (
                                                                 <span className="text-green-500 text-base">🇮🇳 Hindi Dubbed</span>
                                                             )}
-                                                            {/* {torrent.source && (
+                                                            {torrent.source && (
                                                                 <span className="text-gray-500 text-base">Source: {torrent.source}</span>
-                                                            )} */}
+                                                            )}
                                                         </div>
                                                     </div>
                                                     
@@ -248,7 +248,7 @@ const MovieDetail = () => {
                                                         className="w-full py-3 bg-[#e50914] hover:bg-red-700 rounded-lg text-white text-lg font-semibold transition-colors flex items-center justify-center space-x-2"
                                                     >
                                                         <Download size={22} />
-                                                        <span>Download</span>
+                                                        <span>Download Magnet</span>
                                                     </button>
                                                 </div>
                                             ))}
