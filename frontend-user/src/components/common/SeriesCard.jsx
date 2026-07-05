@@ -4,7 +4,6 @@ import { Link } from 'react-router-dom';
 import { Star, Tv } from 'lucide-react';
 
 const SeriesCard = ({ series }) => {
-    // Safe data extraction - Using title column
     const getTitle = () => {
         return series.title || series.name || 'Unknown Series';
     };
@@ -22,7 +21,7 @@ const SeriesCard = ({ series }) => {
 
     return (
         <Link to={`/series/${series.id}`} className="block group">
-            <div className="bg-[#1a1a2e] rounded-xl overflow-hidden border border-gray-800 hover:border-[#e50914] transition-all hover:transform hover:-translate-y-1 hover:shadow-xl">
+            <div className="bg-[#1a1a1a] rounded-xl overflow-hidden border border-[#2a2a2a] hover:border-[#e50914] transition-all hover:transform hover:-translate-y-1 hover:shadow-xl hover:shadow-[#e50914]/10">
                 <div className="relative aspect-[2/3] overflow-hidden bg-gray-800">
                     {series.poster_path ? (
                         <img
@@ -32,7 +31,6 @@ const SeriesCard = ({ series }) => {
                             loading="lazy"
                             onError={(e) => {
                                 e.target.style.display = 'none';
-                                e.target.parentElement.innerHTML = `<div class="w-full h-full flex items-center justify-center"><svg class="w-10 h-10 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 4v16M17 4v16M3 8h18M3 16h18"/></svg></div>`;
                             }}
                         />
                     ) : (
@@ -49,12 +47,11 @@ const SeriesCard = ({ series }) => {
                     )}
                     
                     {series.hindi_dubbed_count > 0 && (
-                        <div className="absolute top-2 right-2 px-1.5 py-0.5 bg-green-600/80 text-[10px] font-semibold rounded">
+                        <div className="absolute top-2 right-2 px-1.5 py-0.5 bg-emerald-600/80 text-[10px] font-semibold rounded">
                             🇮🇳 Hindi
                         </div>
                     )}
                     
-                    {/* TV Series Badge */}
                     <div className="absolute top-2 left-2 px-1.5 py-0.5 bg-[#e50914]/80 text-[10px] font-semibold rounded">
                         📺 Series
                     </div>

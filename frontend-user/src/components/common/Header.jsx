@@ -90,7 +90,7 @@ const handleSearch = (e) => {
                     </form>
 
                     {/* Mobile search icon */}
-                    <button 
+                    {/* <button 
                         className="sm:hidden ml-auto text-white" 
                         aria-label="Search"
                         onClick={() => {
@@ -100,7 +100,7 @@ const handleSearch = (e) => {
                         }}
                     >
                         <Search size={20} />
-                    </button>
+                    </button> */}
                 </div>
 
                 {/* Mobile search bar (own row) */}
@@ -148,7 +148,7 @@ const handleSearch = (e) => {
 
             {/* ===== Quick tags strip ===== */}
             <div className="bg-[#1c1c1c] border-b border-white/5 overflow-x-auto">
-                <div className="container mx-auto px-4 py-2.5 flex items-center gap-2 min-w-max md:min-w-0 md:flex-wrap">
+                <div className="container mx-auto px-4 py-2.5 flex items-center justify-center gap-2 flex-wrap">
                     <a
                         href="https://t.me/"
                         target="_blank"

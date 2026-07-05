@@ -157,19 +157,11 @@ const MovieDetail = () => {
         <div className="grid grid-cols-1 md:grid-cols-[260px_1fr] gap-3 p-4">
           <div className="flex justify-center md:justify-start">
             {movie.poster_path ? (
-              <div className="relative w-fit">
-                <img
-                  src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
-                  alt={movie.title}
-                  className="w-[260px] rounded-xl border-2 border-yellow-400 shadow-2xl"
-                />
-
-                {/* Rating Badge */}
-                <div className="absolute -bottom-3 left-3 bg-yellow-400 text-black font-bold text-sm px-3 py-1 rounded-r-lg rounded-tl-lg shadow-lg flex items-center gap-1">
-                  <Star size={14} fill="currentColor" />
-                  {rating}
-                </div>
-              </div>
+              <img
+                src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
+                alt={movie.title}
+                className="w-[260px] rounded-lg shadow-2xl"
+              />
             ) : (
               <div className="w-full h-80 bg-gray-800 rounded-lg flex items-center justify-center">
                 <Film size={48} className="text-gray-600" />
@@ -178,7 +170,7 @@ const MovieDetail = () => {
           </div>
 
           <div className="space-y-2">
-            <h1 className="text-2xl md:text-3xl font-bold text-[#f5c518]">
+            <h1 className="text-2xl md:text-3xl font-bold text-white">
               {movie.title}
             </h1>
 
@@ -201,7 +193,7 @@ const MovieDetail = () => {
               {genres.map((genre) => (
                 <span
                   key={genre.id || genre.name}
-                  className="px-2 py-0.5 bg-gray-800 rounded-full text-xs text-[#f5c518] border border-gray-700"
+                  className="px-2 py-0.5 bg-gray-800 rounded-full text-xs text-gray-300 border border-gray-700"
                 >
                   {genre.name}
                 </span>
@@ -233,7 +225,9 @@ const MovieDetail = () => {
               )}
               {movie.writer && (
                 <p>
-                  <span className="text-gray-400 font-semibold">Writer: </span>
+                  <span className="text-gray-400 font-semibold">
+                    Writer:{" "}
+                  </span>
                   <span className="text-white">{movie.writer}</span>
                 </p>
               )}
@@ -277,9 +271,9 @@ const MovieDetail = () => {
         </div>
       </div>
 
-      {/*  Movie Details block */}
+      {/* BollyFlix Movie Details block */}
       <div className="mt-6 bg-[#1a1a2e] rounded-xl border border-gray-800 overflow-hidden px-6 py-6">
-        <h2 className="text-center text-xl sm:text-2xl font-bold text-[#f5c518] mb-6">
+        <h2 className="text-center text-xl sm:text-2xl font-bold text-[#e50914] mb-6">
           Download {movie.title} ({getYear()}) Hindi Movie ~ BollyFlix
         </h2>
 
@@ -290,7 +284,7 @@ const MovieDetail = () => {
               key={label}
               className="flex items-start gap-3 text-sm sm:text-base"
             >
-              <span className="mt-1.5 w-2 h-2 flex-shrink-0 bg-[#f5c518]" />
+              <span className="mt-1.5 w-2 h-2 flex-shrink-0 bg-[#e50914]" />
               <p className="text-gray-100">
                 <span className="font-bold text-white">{label}: </span>
                 {value}
@@ -315,7 +309,7 @@ const MovieDetail = () => {
           <>
             <h2 className="text-lg font-bold text-white mb-4 flex items-center space-x-2">
               <Download size={20} className="text-[#e50914]" />
-              <span>Download Link</span>
+              <span>Download Torrents</span>
               <span className="text-sm text-gray-400 font-normal">
                 ({torrents.length})
               </span>
@@ -341,7 +335,9 @@ const MovieDetail = () => {
                       <p className="text-gray-300 text-sm text-center max-w-xl line-clamp-2">
                         {torrentTitle}{" "}
                         {torrent.is_hindi_dubbed && (
-                          <span className="text-gray-300">in Hindi Dubbed</span>
+                          <span className="text-gray-300">
+                            in Hindi Dubbed
+                          </span>
                         )}{" "}
                         {torrent.size}
                         {" GB"}
@@ -363,15 +359,15 @@ const MovieDetail = () => {
                             <HardDrive size={12} /> {torrent.size}
                           </span>
                         )}
-                        {/* <span className="flex items-center gap-1 text-green-500">
+                        <span className="flex items-center gap-1 text-green-500">
                           <TrendingUp size={12} /> {torrent.seeders || 0}{" "}
                           seeders
-                        </span> */}
-                        {/* <span className="flex items-center gap-1 text-yellow-500">
+                        </span>
+                        <span className="flex items-center gap-1 text-yellow-500">
                           <Users size={12} /> {torrent.leechers || 0} leechers
-                        </span> */}
+                        </span>
                         {torrent.is_hindi_dubbed && (
-                          <span className="text-yellow-400">
+                          <span className="text-green-400">
                             🇮🇳 Hindi Dubbed
                           </span>
                         )}
@@ -387,9 +383,7 @@ const MovieDetail = () => {
         ) : (
           <div className="bg-[#1a1a2e] rounded-xl border border-gray-800 p-12 text-center">
             <div className="text-5xl mb-4">🔍</div>
-            <p className="text-gray-400">
-              No torrents available for this movie
-            </p>
+            <p className="text-gray-400">No torrents available for this movie</p>
             <p className="text-gray-600 text-sm mt-1">
               Check back later or search for another movie
             </p>
