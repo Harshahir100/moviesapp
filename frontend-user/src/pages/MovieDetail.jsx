@@ -1,7 +1,9 @@
+// frontend-user/src/pages/MovieDetail.jsx
 import React, { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import { getMovieDetails } from "../services/api";
 import LoadingSpinner from "../components/common/LoadingSpinner";
+import TorBoxDownload from "../components/TorBoxDownload";
 import {
   Film,
   Star,
@@ -10,6 +12,7 @@ import {
   TrendingUp,
   Users,
   HardDrive,
+  Cloud,
 } from "lucide-react";
 import toast from "react-hot-toast";
 
@@ -17,6 +20,8 @@ const MovieDetail = () => {
   const { id } = useParams();
   const [movie, setMovie] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [showTorBox, setShowTorBox] = useState(false);
+  const [selectedTorrent, setSelectedTorrent] = useState(null);
 
   useEffect(() => {
     fetchMovieDetails();
@@ -39,6 +44,26 @@ const MovieDetail = () => {
     if (!magnet) return;
     window.open(magnet, "_blank");
     toast.success("Opening magnet link...");
+  };
+
+  const openTorBox = (torrent) => {
+    if (!movie || !torrent) return;
+
+    const movieData = {
+      id: movie.id,
+      title: movie.title,
+      poster_path: movie.poster_path,
+      overview: movie.overview,
+      release_date: movie.release_date,
+      vote_average: movie.vote_average,
+      magnet_link: torrent.magnet_link || torrent.magnetLink,
+      file_size_text: torrent.size,
+      quality: torrent.quality,
+      seeders: torrent.seeders,
+      leechers: torrent.leechers,
+    };
+    setSelectedTorrent(movieData);
+    setShowTorBox(true);
   };
 
   const getVoteAverage = () => {
@@ -101,7 +126,7 @@ const MovieDetail = () => {
     (a, b) => qualityOrder.indexOf(a) - qualityOrder.indexOf(b),
   );
 
-  // Derive unified quality string e.g. "480p | 720p | 1080p"
+  // Derive unified quality string
   const allQualities =
     sortedQualities
       .filter((q) => q !== "Unknown")
@@ -152,19 +177,21 @@ const MovieDetail = () => {
         <span>Back</span>
       </Link>
 
-      {/* Movie Header - same size/layout as SeriesDetail */}
+      {/* Movie Header */}
       <div className="bg-[#1a1a2e] rounded-xl border border-gray-800 overflow-hidden">
         <div className="grid grid-cols-1 md:grid-cols-[260px_1fr] gap-3 p-4">
           <div className="flex justify-center md:justify-start">
             {movie.poster_path ? (
               <div className="relative w-fit">
                 <img
-                  src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
+                  src={
+                    movie.poster_path?.startsWith("http")
+                      ? movie.poster_path
+                      : `https://image.tmdb.org/t/p/w500${movie.poster_path}`
+                  }
                   alt={movie.title}
                   className="w-[260px] rounded-xl border-2 border-yellow-400 shadow-2xl"
                 />
-
-                {/* Rating Badge */}
                 <div className="absolute -bottom-3 left-3 bg-yellow-400 text-black font-bold text-sm px-3 py-1 rounded-r-lg rounded-tl-lg shadow-lg flex items-center gap-1">
                   <Star size={14} fill="currentColor" />
                   {rating}
@@ -277,7 +304,7 @@ const MovieDetail = () => {
         </div>
       </div>
 
-      {/*  Movie Details block */}
+      {/* Movie Details block */}
       <div className="mt-6 bg-[#1a1a2e] rounded-xl border border-gray-800 overflow-hidden px-6 py-6">
         <h2 className="text-center text-xl sm:text-2xl font-bold text-[#f5c518] mb-6">
           Download {movie.title} ({getYear()}) Hindi Movie ~ BollyFlix
@@ -347,14 +374,13 @@ const MovieDetail = () => {
                         {" GB"}
                       </p>
 
+                      {/* TorBox High-Speed Download Button */}
                       <button
-                        onClick={() =>
-                          openMagnet(torrent.magnet_link || torrent.magnetLink)
-                        }
-                        className="w-full max-w-sm py-3 rounded-lg border-2 border-[#e50914] bg-[#e50914] hover:bg-red-700 hover:border-red-700 text-white font-bold text-base tracking-wide transition-all flex items-center justify-center gap-2 shadow-md shadow-[#e50914]/20"
+                        onClick={() => openTorBox(torrent)}
+                        className="w-full max-w-sm py-3 rounded-lg border-2 border-blue-600 bg-blue-600 hover:bg-blue-700 text-white font-bold text-base tracking-wide transition-all flex items-center justify-center gap-2 shadow-md shadow-blue-600/20"
                       >
-                        <Download size={17} />
-                        Download
+                        <Cloud size={17} />
+                        High-Speed Download
                       </button>
 
                       <div className="flex flex-wrap items-center justify-center gap-4 text-xs text-gray-500">
@@ -363,20 +389,12 @@ const MovieDetail = () => {
                             <HardDrive size={12} /> {torrent.size}
                           </span>
                         )}
-                        {/* <span className="flex items-center gap-1 text-green-500">
-                          <TrendingUp size={12} /> {torrent.seeders || 0}{" "}
-                          seeders
-                        </span> */}
-                        {/* <span className="flex items-center gap-1 text-yellow-500">
-                          <Users size={12} /> {torrent.leechers || 0} leechers
-                        </span> */}
                         {torrent.is_hindi_dubbed && (
                           <span className="text-yellow-400">
                             🇮🇳 Hindi Dubbed
                           </span>
                         )}
                       </div>
-
                       <hr className="w-full border-gray-800 mt-1" />
                     </div>
                   );
@@ -396,6 +414,17 @@ const MovieDetail = () => {
           </div>
         )}
       </div>
+
+      {/* TorBox Modal */}
+      {showTorBox && selectedTorrent && (
+        <TorBoxDownload
+          movie={selectedTorrent}
+          onClose={() => {
+            setShowTorBox(false);
+            setSelectedTorrent(null);
+          }}
+        />
+      )}
     </div>
   );
 };
