@@ -1,25 +1,25 @@
-// frontend-user/src/components/TorBoxDownload.jsx
+// frontend-user/src/components/SeriesTorBoxDownload.jsx
 import React, { useState, useEffect, useRef } from "react";
 import { X, Cloud, Play, Loader, Zap } from "lucide-react";
 import toast from "react-hot-toast";
 
-// ✅ CHANGE: API_URL should point to main backend (port 5000)
+// ✅ API_URL should point to main backend (port 5000)
 const API_URL = "http://localhost:5000/api/torbox";
 
-const TorBoxDownload = ({ movie, onClose }) => {
-  const [btnDisabled, setBtnDisabled] = useState(false);
-  const [panelVisible, setPanelVisible] = useState(false);
-  const [engineStatus, setEngineStatus] = useState("Initializing...");
-  const [engineStatusColor, setEngineStatusColor] = useState("#38bdf8");
-  const [timerText, setTimerText] = useState("10s");
-  const [timerReady, setTimerReady] = useState(false);
-  const [speedLabel, setSpeedLabel] = useState("Network Speed: 0.00 MB/s");
-  const [progress, setProgress] = useState(0);
-  const [errorMsg, setErrorMsg] = useState("");
-  const [downloadUrl, setDownloadUrl] = useState(null);
-  const [isCachedHit, setIsCachedHit] = useState(false);
+const SeriesTorBoxDownload = ({ series, onClose }) => {
+  const [btnDisabled,       setBtnDisabled]       = useState(false);
+  const [panelVisible,      setPanelVisible]       = useState(false);
+  const [engineStatus,      setEngineStatus]       = useState("Initializing...");
+  const [engineStatusColor, setEngineStatusColor]  = useState("#38bdf8");
+  const [timerText,         setTimerText]          = useState("10s");
+  const [timerReady,        setTimerReady]         = useState(false);
+  const [speedLabel,        setSpeedLabel]         = useState("Network Speed: 0.00 MB/s");
+  const [progress,          setProgress]           = useState(0);
+  const [errorMsg,          setErrorMsg]           = useState("");
+  const [downloadUrl,       setDownloadUrl]        = useState(null);
+  const [isCachedHit,       setIsCachedHit]        = useState(false);
 
-  const statusIntervalRef = useRef(null);
+  const statusIntervalRef    = useRef(null);
   const countdownIntervalRef = useRef(null);
 
   useEffect(() => {
@@ -45,19 +45,17 @@ const TorBoxDownload = ({ movie, onClose }) => {
     clearInterval(countdownIntervalRef.current);
   };
 
-  // ✅ FIXED: Using correct API endpoints
   const triggerTorBoxDownload = async () => {
     setErrorMsg("");
     setBtnDisabled(true);
     setPanelVisible(true);
-    setEngineStatus("Checking Download Link...");
+    setEngineStatus("Checking Download Link");
 
     try {
-      // ✅ POST /api/torbox/add
       const response = await fetch(`${API_URL}/add`, {
-        method: "POST",
+        method:  "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ magnet: movie.magnet_link }),
+        body:    JSON.stringify({ magnet: series.magnet_link }),
       });
       const data = await response.json();
       if (!data.success) throw new Error(data.error);
@@ -66,7 +64,7 @@ const TorBoxDownload = ({ movie, onClose }) => {
         console.log("⚡ Cache hit — skipping wait timer");
         setIsCachedHit(true);
         setTimerReady(true);
-        setEngineStatus("Download- checking status…");
+        setEngineStatus("Download- Checking Status…");
         toast.success("⚡ Existing torrent found! Fetching link…");
         pollTorBoxStatus(data.torrent_id);
       } else {
@@ -83,7 +81,7 @@ const TorBoxDownload = ({ movie, onClose }) => {
 
   const startVisualTimer = (torrentId) => {
     let timeLeft = 10;
-    setEngineStatus("Processing Cloud Cache Link…");
+    setEngineStatus("Processing Download Link…");
 
     countdownIntervalRef.current = setInterval(() => {
       timeLeft--;
@@ -96,12 +94,11 @@ const TorBoxDownload = ({ movie, onClose }) => {
     }, 1000);
   };
 
-  // ✅ FIXED: GET /api/torbox/status
   const pollTorBoxStatus = (torrentId) => {
     statusIntervalRef.current = setInterval(async () => {
       try {
         const response = await fetch(`${API_URL}/status?id=${torrentId}`);
-        const data = await response.json();
+        const data     = await response.json();
         if (!data.success) return;
 
         const state = data.state.toLowerCase();
@@ -109,23 +106,12 @@ const TorBoxDownload = ({ movie, onClose }) => {
         setSpeedLabel(`Network Speed: ${data.speed.toFixed(2)} MB/s`);
         setProgress(data.progress);
 
-        const doneStates = [
-          "completed",
-          "cached",
-          "uploading",
-          "uploading (no peers)",
-          "seeding",
-          "finished",
-        ];
+        const doneStates = ["completed", "cached", "uploading", "uploading (no peers)", "seeding", "finished"];
         if (doneStates.includes(state)) {
           clearInterval(statusIntervalRef.current);
           setProgress(100);
           fetchPremiumDirectLink(torrentId);
-        } else if (
-          state.includes("failed") ||
-          state === "error" ||
-          state === "dead"
-        ) {
+        } else if (state.includes("failed") || state === "error" || state === "dead") {
           clearInterval(statusIntervalRef.current);
           setErrorMsg("Torbox reports the torrent entered an error state.");
         }
@@ -135,65 +121,59 @@ const TorBoxDownload = ({ movie, onClose }) => {
     }, 2500);
   };
 
-  // ✅ FIXED: GET /api/torbox/link
   const fetchPremiumDirectLink = async (torrentId) => {
-    setEngineStatus("Creating Download Link…");
+    setEngineStatus("Creating Download Link...");
     try {
       const response = await fetch(`${API_URL}/link?id=${torrentId}`);
-      const data = await response.json();
+      const data     = await response.json();
       if (data.success) {
         setEngineStatus("COMPLETED!");
         setEngineStatusColor("#10b981");
         setDownloadUrl(data.download_url);
         toast.success("✅ Download ready!");
       } else {
-        setErrorMsg(
-          data.error || "Direct distribution servers refused request.",
-        );
+        setErrorMsg(data.error || "Direct distribution servers refused request.");
       }
     } catch (e) {
       setErrorMsg("Network extraction failed.");
     }
   };
 
-  if (!movie) return null;
+  if (!series) return null;
 
   // ✅ Get year from release_date
   const getYear = () => {
-    if (!movie?.release_date) return "N/A";
-    return movie.release_date.split("-")[0] || "N/A";
+    if (!series?.release_date) return "N/A";
+    return series.release_date.split("-")[0] || "N/A";
   };
 
-  // ✅ Same logic as MovieDetail.jsx (original_language + is_hindi_dubbed)
+  // ✅ Get language
   const getLanguage = () => {
-    return `${movie?.original_language?.toUpperCase() || "N/A"}${
-      movie?.is_hindi_dubbed ? " / Hindi Dubbed" : ""
+    return `${series?.original_language?.toUpperCase() || "N/A"}${
+      series?.is_hindi_dubbed ? " / Hindi Dubbed" : ""
     }`;
   };
 
   // ✅ Get torrent title
   const getTorrentTitle = () => {
-    return movie?.torrent_title || movie?.title || "Unknown Title";
+    return series?.torrent_title || series?.title || "Unknown Title";
   };
 
   // ✅ Get quality from torrent
   const getQuality = () => {
-    return movie?.quality || "N/A";
+    return series?.quality || "N/A";
   };
 
   // ✅ Get size from torrent
   const getSize = () => {
-    return movie?.file_size_text || movie?.size || "N/A";
+    return series?.file_size_text || series?.size || "N/A";
   };
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4">
       <div className="bg-[#1e293b] rounded-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto p-6 relative border border-gray-700">
         <button
-          onClick={() => {
-            resetTorBoxUI();
-            onClose();
-          }}
+          onClick={() => { resetTorBoxUI(); onClose(); }}
           className="absolute top-4 right-4 text-gray-400 hover:text-white transition-colors"
         >
           <X size={24} />
@@ -204,37 +184,30 @@ const TorBoxDownload = ({ movie, onClose }) => {
           <div className="md:col-span-1">
             <img
               src={
-                movie.poster_path?.startsWith("http")
-                  ? movie.poster_path
-                  : `https://image.tmdb.org/t/p/w500${movie.poster_path}`
+                series.poster_path?.startsWith("http")
+                  ? series.poster_path
+                  : `https://image.tmdb.org/t/p/w500${series.poster_path}`
               }
-              alt={movie.title}
+              alt={series.title}
               className="w-[260px] rounded-xl border-2 shadow-2xl"
               onError={(e) => {
-                e.target.src =
-                  "https://placehold.co/300x450/1e293b/fff?text=No+Poster";
+                e.target.src = "https://placehold.co/300x450/1e293b/fff?text=No+Poster";
               }}
             />
           </div>
 
           {/* Details */}
           <div className="md:col-span-2 space-y-4">
-            {/* ✅ Torrent Title */}
             <h2 className="text-2xl font-bold text-white">
               {getTorrentTitle()}
             </h2>
+            
+            <p className="text-gray-400 text-sm">{series.overview || "No synopsis available."}</p>
 
-            <p className="text-gray-400 text-sm">
-              {movie.overview || "No synopsis available."}
-            </p>
-
-            {/* ✅ Details Grid with Language same as MovieDetail.jsx */}
             <div className="grid grid-cols-2 gap-3 bg-[#0f172a] p-4 rounded-xl border border-gray-700 text-sm">
               <div>
                 <span className="text-gray-500">Rating:</span>
-                <b className="text-yellow-400 ml-1">
-                  {movie.vote_average || "0.0"}
-                </b>
+                <b className="text-yellow-400 ml-1">{series.vote_average || "0.0"}</b>
               </div>
               <div>
                 <span className="text-gray-500">Size:</span>
@@ -260,14 +233,9 @@ const TorBoxDownload = ({ movie, onClose }) => {
               onClick={triggerTorBoxDownload}
             >
               {btnDisabled ? (
-                <>
-                  <Loader size={18} className="animate-spin" />
-                  Download Processing...
-                </>
+                <><Loader size={18} className="animate-spin" />Download Processing...</>
               ) : (
-                <>
-                  <Cloud size={18} /> Cloud Unlock to High-Speed Download Link
-                </>
+                <><Cloud size={18} /> Cloud Unlock to High-Speed Download Link</>
               )}
             </button>
 
@@ -283,9 +251,7 @@ const TorBoxDownload = ({ movie, onClose }) => {
                 <div className="flex justify-between text-sm">
                   <div>
                     Download Status:{" "}
-                    <span style={{ color: engineStatusColor }}>
-                      {engineStatus}
-                    </span>
+                    <span style={{ color: engineStatusColor }}>{engineStatus}</span>
                   </div>
                   <div>
                     {timerReady ? (
@@ -293,9 +259,7 @@ const TorBoxDownload = ({ movie, onClose }) => {
                     ) : (
                       <>
                         Wait For The Second:{" "}
-                        <span className="text-yellow-400 font-bold">
-                          {timerText}
-                        </span>
+                        <span className="text-yellow-400 font-bold">{timerText}</span>
                       </>
                     )}
                   </div>
@@ -323,7 +287,7 @@ const TorBoxDownload = ({ movie, onClose }) => {
                     rel="noopener noreferrer"
                     className="w-full py-3 bg-green-600 hover:bg-green-700 rounded-xl text-white font-bold flex items-center justify-center gap-2 transition-all"
                   >
-                    <span>🎬 Click This Direct Download Link</span>
+                    <span >🎬 Click This Direct Download Link</span>
                   </a>
                 )}
               </div>
@@ -335,4 +299,4 @@ const TorBoxDownload = ({ movie, onClose }) => {
   );
 };
 
-export default TorBoxDownload;
+export default SeriesTorBoxDownload;

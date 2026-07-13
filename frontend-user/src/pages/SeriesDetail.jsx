@@ -3,6 +3,7 @@ import React, { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import { getSeriesDetails } from "../services/api";
 import LoadingSpinner from "../components/common/LoadingSpinner";
+import SeriesTorBoxDownload from "../components/SeriesTorBoxDownload"; // ✅ Changed
 import {
   Star,
   Calendar,
@@ -16,6 +17,7 @@ import {
   HardDrive,
   ChevronDown,
   ChevronUp,
+  Cloud,
 } from "lucide-react";
 import toast from "react-hot-toast";
 
@@ -25,6 +27,8 @@ const SeriesDetail = () => {
   const [loading, setLoading] = useState(true);
   const [expandedSeasons, setExpandedSeasons] = useState({});
   const [copied, setCopied] = useState(null);
+  const [showTorBox, setShowTorBox] = useState(false);
+  const [selectedTorrent, setSelectedTorrent] = useState(null);
 
   useEffect(() => {
     fetchSeriesDetails();
@@ -69,6 +73,55 @@ const SeriesDetail = () => {
     if (!magnet) return;
     window.open(magnet, "_blank");
     toast.success("Opening magnet link...");
+  };
+
+  // ✅ TorBox function for series
+  const openTorBox = (torrent) => {
+    if (!series || !torrent) return;
+
+    const getLanguage = () => {
+      if (series?.original_language) {
+        const lang = series.original_language.toUpperCase();
+        if (torrent?.is_hindi_dubbed) {
+          return `${lang} / Hindi Dubbed`;
+        }
+        return lang;
+      }
+      const title = torrent?.title || torrent?.torrent_title || "";
+      const titleLower = title.toLowerCase();
+      if (titleLower.includes('hindi') || titleLower.includes('hin')) {
+        return torrent?.is_hindi_dubbed ? "Hindi Dubbed" : "Hindi";
+      }
+      if (titleLower.includes('english') || titleLower.includes('eng')) {
+        return "English";
+      }
+      if (torrent?.is_hindi_dubbed) {
+        return "Hindi Dubbed";
+      }
+      return "N/A";
+    };
+
+    const seriesData = {
+      id: series.id,
+      title: series.title || series.name,
+      poster_path: series.poster_path,
+      overview: series.overview,
+      release_date: series.first_air_date,
+      vote_average: series.vote_average,
+      magnet_link: torrent.magnet_link || torrent.magnetLink,
+      file_size_text: torrent.size,
+      quality: torrent.quality,
+      seeders: torrent.seeders,
+      leechers: torrent.leechers,
+      original_language: series.original_language || "",
+      is_hindi_dubbed: torrent.is_hindi_dubbed || false,
+      language: getLanguage(),
+      torrent_title: torrent.title || torrent.torrent_title,
+    };
+    
+    console.log("📤 Sending to TorBox (Series):", seriesData);
+    setSelectedTorrent(seriesData);
+    setShowTorBox(true);
   };
 
   // Safe data functions
@@ -118,7 +171,6 @@ const SeriesDetail = () => {
   const countries = series?.production_countries || [];
   const torrents = series.torrents || [];
 
-  // ── Derived fields for the Series Details block ──
   const allSizes =
     [...new Set(torrents.map((t) => t.size).filter(Boolean))].join(", ") ||
     "N/A";
@@ -158,7 +210,6 @@ const SeriesDetail = () => {
     { label: "Cast", value: starsValue },
     ...(series.creator ? [{ label: "Creator", value: series.creator }] : []),
     { label: "Size", value: allSizes },
-    
     {
       label: "Quality",
       value: torrents[0]?.quality || "N/A",
@@ -324,7 +375,7 @@ const SeriesDetail = () => {
         )}
       </div>
 
-      {/* ===== UPDATED SEASONS & EPISODES WITH TORRENTS ===== */}
+      {/* Seasons & Episodes */}
       {series.seasons && series.seasons.length > 0 && (
         <div className="mt-6">
           <h2 className="flex items-center gap-2 text-lg font-bold text-white mb-4">
@@ -371,7 +422,6 @@ const SeriesDetail = () => {
                               key={episode.episode_number}
                               className="flex flex-col p-3 bg-gray-800/30 rounded-lg hover:bg-gray-700/40 transition-colors"
                             >
-                              {/* Episode Header */}
                               <div className="flex items-center justify-between">
                                 <div className="flex items-center gap-2">
                                   <span className="text-xs font-medium text-[#f5c518] bg-[#f5c518]/10 px-2 py-0.5 rounded">
@@ -383,14 +433,8 @@ const SeriesDetail = () => {
                                       `Episode ${episode.episode_number}`}
                                   </span>
                                 </div>
-                                {/* {hasTorrents && (
-                                  <span className="text-xs text-green-500">
-                                    {episodeTorrents.length} torrents
-                                  </span>
-                                )} */}
                               </div>
 
-                              {/* Episode Torrents */}
                               {hasTorrents ? (
                                 <div className="mt-2 space-y-2">
                                   {episodeTorrents.map((torrent, tIndex) => (
@@ -398,7 +442,6 @@ const SeriesDetail = () => {
                                       key={tIndex}
                                       className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 bg-[#111] rounded-lg p-2.5 border border-gray-700/50 hover:border-[#e50914]/30 transition-colors"
                                     >
-                                      {/* Torrent Details */}
                                       <div className="flex-1 min-w-0">
                                         <div className="flex items-center gap-2 flex-wrap">
                                           <span className="text-xs font-medium text-white truncate">
@@ -407,27 +450,18 @@ const SeriesDetail = () => {
                                               `Episode ${episode.episode_number}`}
                                           </span>
                                           {torrent.quality && (
-                                            <span
-                                              className={`px-1.5 py-0.5 text-[9px] font-bold rounded ${
-                                                torrent.quality === "4K"
-                                                  ? "bg-purple-600"
-                                                  : torrent.quality === "1080p"
-                                                    ? "bg-blue-600"
-                                                    : torrent.quality === "720p"
-                                                      ? "bg-emerald-600"
-                                                      : torrent.quality ===
-                                                          "480p"
-                                                        ? "bg-amber-600"
-                                                        : "bg-gray-600"
-                                              } text-white`}
-                                            >
+                                            <span className={`px-1.5 py-0.5 text-[9px] font-bold rounded ${
+                                              torrent.quality === "4K" ? "bg-purple-600" :
+                                              torrent.quality === "1080p" ? "bg-red-600" :
+                                              torrent.quality === "720p" ? "bg-emerald-600" :
+                                              torrent.quality === "480p" ? "bg-amber-600" :
+                                              "bg-gray-600"
+                                            } text-white`}>
                                               {torrent.quality}
                                             </span>
                                           )}
                                           {torrent.is_hindi_dubbed && (
-                                            <span className="text-[10px] text-emerald-400">
-                                              🇮🇳 Hindi
-                                            </span>
+                                            <span className="text-[10px] text-emerald-400">🇮🇳 Hindi</span>
                                           )}
                                         </div>
                                         <div className="flex flex-wrap items-center gap-3 mt-1 text-[10px] text-gray-400">
@@ -437,57 +471,16 @@ const SeriesDetail = () => {
                                               {torrent.size}
                                             </span>
                                           )}
-                                          {/* <span className="flex items-center gap-1 text-emerald-400">
-                                            <TrendingUp size={11} />
-                                            {torrent.seeders || 0} seeders
-                                          </span> */}
-                                          {/* <span className="flex items-center gap-1 text-amber-400">
-                                            <Users size={11} />
-                                            {torrent.leechers || 0} leechers
-                                          </span> */}
                                         </div>
                                       </div>
-
-                                      {/* Download Button & Magnet Link */}
                                       <div className="flex items-center gap-2 flex-shrink-0">
                                         <button
-                                          onClick={() =>
-                                            openMagnet(
-                                              torrent.magnet_link ||
-                                                torrent.magnetLink,
-                                            )
-                                          }
-                                          className="flex items-center gap-1.5 px-3 py-1.5 bg-[#e50914] hover:bg-red-700 rounded-lg text-white text-xs font-medium transition-colors"
+                                          onClick={() => openTorBox(torrent)}
+                                          className="flex items-center gap-1.5 px-3 py-1.5 bg-red-600 hover:bg-red-700 rounded-lg text-white text-xs font-medium transition-colors"
                                         >
-                                          <Download size={13} />
-                                          <span>Download</span>
+                                          <Cloud size={13} />
+                                          <span>High-Speed</span>
                                         </button>
-                                        {/* <button
-                                          onClick={() =>
-                                            copyMagnet(
-                                              torrent.magnet_link ||
-                                                torrent.magnetLink,
-                                              `e${episode.episode_number}-${tIndex}`,
-                                            )
-                                          }
-                                          className="flex items-center gap-1 px-2 py-1.5 bg-gray-700 hover:bg-gray-600 rounded-lg text-gray-300 hover:text-white text-[10px] transition-colors"
-                                        >
-                                          {copied ===
-                                          `e${episode.episode_number}-${tIndex}` ? (
-                                            <Check
-                                              size={12}
-                                              className="text-emerald-400"
-                                            />
-                                          ) : (
-                                            <Copy size={12} />
-                                          )}
-                                          <span className="hidden sm:inline">
-                                            {copied ===
-                                            `e${episode.episode_number}-${tIndex}`
-                                              ? "Copied!"
-                                              : "Magnet"}
-                                          </span>
-                                        </button> */}
                                       </div>
                                     </div>
                                   ))}
@@ -514,7 +507,7 @@ const SeriesDetail = () => {
         </div>
       )}
 
-      {/* ===== TORRENTS SECTION - ONLY SEASON PACKS ===== */}
+      {/* Full Complete Season */}
       {torrents.length > 0 && (
         <div className="mt-6">
           <h2 className="text-lg font-bold text-white mb-4 flex items-center space-x-2">
@@ -525,7 +518,6 @@ const SeriesDetail = () => {
             </span>
           </h2>
 
-          {/* Only show Season Packs (torrent_type === 'season') */}
           {["4K", "1080p", "720p", "480p"].map((quality) => {
             const qualityTorrents = torrents.filter(
               (t) => t.quality === quality && t.torrent_type === "season",
@@ -538,22 +530,14 @@ const SeriesDetail = () => {
                 className="mb-4 bg-[#1a1a2e] rounded-xl border border-gray-800 overflow-hidden"
               >
                 <div className="flex items-center space-x-3 px-4 py-2 bg-gray-800/50 border-b border-gray-800">
-                  <span
-                    className={`px-2 py-0.5 text-xs font-semibold rounded ${
-                      quality === "4K"
-                        ? "bg-purple-600"
-                        : quality === "1080p"
-                          ? "bg-blue-600"
-                          : quality === "720p"
-                            ? "bg-green-600"
-                            : "bg-yellow-600"
-                    }`}
-                  >
+                  <span className={`px-2 py-0.5 text-xs font-semibold rounded ${
+                    quality === "4K" ? "bg-purple-600" :
+                    quality === "1080p" ? "bg-red-600" :
+                    quality === "720p" ? "bg-green-600" :
+                    "bg-yellow-600"
+                  }`}>
                     {quality}
                   </span>
-                  {/* <span className="text-gray-400 text-xs">
-                    {qualityTorrents.length} torrents
-                  </span> */}
                 </div>
                 <div className="divide-y divide-gray-800">
                   {qualityTorrents.map((torrent, index) => (
@@ -575,55 +559,18 @@ const SeriesDetail = () => {
                                 <span>{torrent.size}</span>
                               </span>
                             )}
-                            {/* <span className="flex items-center space-x-1">
-                              <TrendingUp
-                                size={12}
-                                className="text-green-500"
-                              />
-                              <span>{torrent.seeders || 0}</span>
-                            </span>
-                            
-                            <span className="flex items-center space-x-1">
-                              <Users size={12} className="text-yellow-500" />
-                              <span>{torrent.leechers || 0}</span>
-                            </span> */}
                             {torrent.is_hindi_dubbed && (
-                              <span className="text-green-500">🇮🇳 Hindi</span>
+                              <span className="text-yellow-500">🇮🇳 Hindi</span>
                             )}
-                            {/* <span className="text-blue-400 text-[10px] bg-blue-400/10 px-1.5 py-0.5 rounded">
-                              Season Pack
-                            </span> */}
                           </div>
                         </div>
                         <div className="flex items-center space-x-2 flex-shrink-0">
-                          {/* <button
-                            onClick={() =>
-                              copyMagnet(
-                                torrent.magnet_link || torrent.magnetLink,
-                                `season-${index}`,
-                              )
-                            }
-                            className="flex items-center space-x-1 px-2 py-1 bg-gray-700 hover:bg-gray-600 rounded text-white text-xs transition-colors"
-                          >
-                            {copied === `season-${index}` ? (
-                              <Check size={14} className="text-green-500" />
-                            ) : (
-                              <Copy size={14} />
-                            )}
-                            <span>
-                              {copied === `season-${index}` ? "Copied" : "Copy"}
-                            </span>
-                          </button> */}
                           <button
-                            onClick={() =>
-                              openMagnet(
-                                torrent.magnet_link || torrent.magnetLink,
-                              )
-                            }
-                            className="flex items-center space-x-1 px-3 py-1 bg-[#e50914] hover:bg-red-700 rounded text-white text-xs font-medium transition-colors"
+                            onClick={() => openTorBox(torrent)}
+                            className="flex items-center space-x-1 px-3 py-1 bg-red-600 hover:bg-red-700 rounded text-white text-xs font-medium transition-colors"
                           >
-                            <Download size={14} />
-                            <span>Download</span>
+                            <Cloud size={14} />
+                            <span>High-Speed</span>
                           </button>
                         </div>
                       </div>
@@ -634,13 +581,23 @@ const SeriesDetail = () => {
             );
           })}
 
-          {/* If no season packs */}
           {torrents.filter((t) => t.torrent_type === "season").length === 0 && (
             <div className="text-center py-8 text-gray-400 text-sm">
               No season pack torrents available
             </div>
           )}
         </div>
+      )}
+
+      {/* TorBox Modal - Using SeriesTorBoxDownload */}
+      {showTorBox && selectedTorrent && (
+        <SeriesTorBoxDownload
+          series={selectedTorrent}
+          onClose={() => {
+            setShowTorBox(false);
+            setSelectedTorrent(null);
+          }}
+        />
       )}
     </div>
   );

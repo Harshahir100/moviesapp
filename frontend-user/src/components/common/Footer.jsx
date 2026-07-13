@@ -8,7 +8,7 @@ const Footer = () => {
                 
                 {/* Copyright & Credits Line */}
                 <div className="text-sm tracking-wide text-gray-400">
-                    Copyright © 2025. Created by <span className="text-[#e50914]">❤️</span> Vegamovies Team <span className="text-[#e50914]">❤️</span>
+                    Copyright © 2026. Created by <span className="text-[#e50914]">❤️</span> FlixVega Team <span className="text-[#e50914]">❤️</span>
                 </div>
 
                 {/* Subtle Divider Line */}

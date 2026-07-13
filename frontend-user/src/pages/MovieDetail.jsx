@@ -61,6 +61,9 @@ const MovieDetail = () => {
       quality: torrent.quality,
       seeders: torrent.seeders,
       leechers: torrent.leechers,
+      // ✅ ADDED: so TorBoxDownload can compute Language exactly like MovieDetail
+      original_language: movie.original_language,
+      is_hindi_dubbed: torrent.is_hindi_dubbed,
     };
     setSelectedTorrent(movieData);
     setShowTorBox(true);
@@ -377,7 +380,7 @@ const MovieDetail = () => {
                       {/* TorBox High-Speed Download Button */}
                       <button
                         onClick={() => openTorBox(torrent)}
-                        className="w-full max-w-sm py-3 rounded-lg border-2 border-blue-600 bg-blue-600 hover:bg-blue-700 text-white font-bold text-base tracking-wide transition-all flex items-center justify-center gap-2 shadow-md shadow-blue-600/20"
+                        className="w-full max-w-sm py-3 rounded-lg border-2 border-red-700 bg-red-600 hover:bg-red-700 text-white font-bold text-base tracking-wide transition-all flex items-center justify-center gap-2 shadow-md shadow-blue-600/20"
                       >
                         <Cloud size={17} />
                         High-Speed Download

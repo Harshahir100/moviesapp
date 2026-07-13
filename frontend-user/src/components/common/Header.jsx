@@ -59,13 +59,13 @@ const handleSearch = (e) => {
                     {/* Logo */}
                     <Link to="/" className="flex flex-col leading-none shrink-0">
                         <span className="text-2xl md:text-3xl font-black tracking-tight">
-                            <span className="text-white">BOLLY</span>
+                            <span className="text-white">Flix</span>
                             <span className="inline-block bg-[#e50914] text-white px-1.5 ml-0.5 -skew-x-6">
-                                FLIX
+                                Vega
                             </span>
                         </span>
                         <span className="text-[9px] md:text-[10px] text-gray-400 tracking-widest mt-0.5">
-                            WWW.BOLLYFLIX.VIP
+                            WWW.FlixVega.VIP
                         </span>
                     </Link>
 
@@ -176,7 +176,7 @@ const handleSearch = (e) => {
                 <div className="bg-[#1d7a3e] text-white">
                     <div className="container mx-auto px-4 py-2 flex items-center justify-center relative">
                         <p className="text-xs md:text-sm font-medium text-center pr-6">
-                            Our New Domain is <span className="font-bold">BollyFlix.To</span> | Please Update Your Bookmark
+                            Our New Domain is <span className="font-bold">FlixVega.To</span> | Please Update Your Bookmark
                         </p>
                         <button
                             onClick={() => setShowBanner(false)}

@@ -16,6 +16,7 @@
     "express": "^4.22.2",
     "express-rate-limit": "^7.1.5",
     "jsonwebtoken": "^9.0.3",
+    "node-fetch": "^2.7.0",
     "pg": "^8.21.0"
   },
   "devDependencies": {
