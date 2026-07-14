@@ -11,7 +11,7 @@ const Home = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [totalItems, setTotalItems] = useState(0);
-  const itemsPerPage = 15;
+  const itemsPerPage = 19;
 
   useEffect(() => {
     fetchMovies(currentPage);
