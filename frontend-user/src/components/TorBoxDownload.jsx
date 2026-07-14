@@ -266,7 +266,7 @@ const TorBoxDownload = ({ movie, onClose }) => {
                 </>
               ) : (
                 <>
-                  <Cloud size={18} /> Cloud Unlock to High-Speed Download Link
+                  <span>Cloud Unlock to High-Speed Download Link</span>
                 </>
               )}
             </button>

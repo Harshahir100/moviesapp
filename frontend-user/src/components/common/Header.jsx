@@ -59,13 +59,13 @@ const handleSearch = (e) => {
                     {/* Logo */}
                     <Link to="/" className="flex flex-col leading-none shrink-0">
                         <span className="text-2xl md:text-3xl font-black tracking-tight">
-                            <span className="text-white">Flix</span>
+                            <span className="text-white">Vega</span>
                             <span className="inline-block bg-[#e50914] text-white px-1.5 ml-0.5 -skew-x-6">
-                                Vega
+                                Flix
                             </span>
                         </span>
                         <span className="text-[9px] md:text-[10px] text-gray-400 tracking-widest mt-0.5">
-                            WWW.FlixVega.VIP
+                            WWW.VegaFlix.VIP
                         </span>
                     </Link>
 

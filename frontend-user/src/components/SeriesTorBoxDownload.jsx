@@ -7,19 +7,19 @@ import toast from "react-hot-toast";
 const API_URL = "http://localhost:5000/api/torbox";
 
 const SeriesTorBoxDownload = ({ series, onClose }) => {
-  const [btnDisabled,       setBtnDisabled]       = useState(false);
-  const [panelVisible,      setPanelVisible]       = useState(false);
-  const [engineStatus,      setEngineStatus]       = useState("Initializing...");
-  const [engineStatusColor, setEngineStatusColor]  = useState("#38bdf8");
-  const [timerText,         setTimerText]          = useState("10s");
-  const [timerReady,        setTimerReady]         = useState(false);
-  const [speedLabel,        setSpeedLabel]         = useState("Network Speed: 0.00 MB/s");
-  const [progress,          setProgress]           = useState(0);
-  const [errorMsg,          setErrorMsg]           = useState("");
-  const [downloadUrl,       setDownloadUrl]        = useState(null);
-  const [isCachedHit,       setIsCachedHit]        = useState(false);
+  const [btnDisabled, setBtnDisabled] = useState(false);
+  const [panelVisible, setPanelVisible] = useState(false);
+  const [engineStatus, setEngineStatus] = useState("Initializing...");
+  const [engineStatusColor, setEngineStatusColor] = useState("#38bdf8");
+  const [timerText, setTimerText] = useState("10s");
+  const [timerReady, setTimerReady] = useState(false);
+  const [speedLabel, setSpeedLabel] = useState("Network Speed: 0.00 MB/s");
+  const [progress, setProgress] = useState(0);
+  const [errorMsg, setErrorMsg] = useState("");
+  const [downloadUrl, setDownloadUrl] = useState(null);
+  const [isCachedHit, setIsCachedHit] = useState(false);
 
-  const statusIntervalRef    = useRef(null);
+  const statusIntervalRef = useRef(null);
   const countdownIntervalRef = useRef(null);
 
   useEffect(() => {
@@ -53,9 +53,9 @@ const SeriesTorBoxDownload = ({ series, onClose }) => {
 
     try {
       const response = await fetch(`${API_URL}/add`, {
-        method:  "POST",
+        method: "POST",
         headers: { "Content-Type": "application/json" },
-        body:    JSON.stringify({ magnet: series.magnet_link }),
+        body: JSON.stringify({ magnet: series.magnet_link }),
       });
       const data = await response.json();
       if (!data.success) throw new Error(data.error);
@@ -98,7 +98,7 @@ const SeriesTorBoxDownload = ({ series, onClose }) => {
     statusIntervalRef.current = setInterval(async () => {
       try {
         const response = await fetch(`${API_URL}/status?id=${torrentId}`);
-        const data     = await response.json();
+        const data = await response.json();
         if (!data.success) return;
 
         const state = data.state.toLowerCase();
@@ -106,12 +106,23 @@ const SeriesTorBoxDownload = ({ series, onClose }) => {
         setSpeedLabel(`Network Speed: ${data.speed.toFixed(2)} MB/s`);
         setProgress(data.progress);
 
-        const doneStates = ["completed", "cached", "uploading", "uploading (no peers)", "seeding", "finished"];
+        const doneStates = [
+          "completed",
+          "cached",
+          "uploading",
+          "uploading (no peers)",
+          "seeding",
+          "finished",
+        ];
         if (doneStates.includes(state)) {
           clearInterval(statusIntervalRef.current);
           setProgress(100);
           fetchPremiumDirectLink(torrentId);
-        } else if (state.includes("failed") || state === "error" || state === "dead") {
+        } else if (
+          state.includes("failed") ||
+          state === "error" ||
+          state === "dead"
+        ) {
           clearInterval(statusIntervalRef.current);
           setErrorMsg("Torbox reports the torrent entered an error state.");
         }
@@ -125,14 +136,16 @@ const SeriesTorBoxDownload = ({ series, onClose }) => {
     setEngineStatus("Creating Download Link...");
     try {
       const response = await fetch(`${API_URL}/link?id=${torrentId}`);
-      const data     = await response.json();
+      const data = await response.json();
       if (data.success) {
         setEngineStatus("COMPLETED!");
         setEngineStatusColor("#10b981");
         setDownloadUrl(data.download_url);
         toast.success("✅ Download ready!");
       } else {
-        setErrorMsg(data.error || "Direct distribution servers refused request.");
+        setErrorMsg(
+          data.error || "Direct distribution servers refused request.",
+        );
       }
     } catch (e) {
       setErrorMsg("Network extraction failed.");
@@ -173,7 +186,10 @@ const SeriesTorBoxDownload = ({ series, onClose }) => {
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4">
       <div className="bg-[#1e293b] rounded-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto p-6 relative border border-gray-700">
         <button
-          onClick={() => { resetTorBoxUI(); onClose(); }}
+          onClick={() => {
+            resetTorBoxUI();
+            onClose();
+          }}
           className="absolute top-4 right-4 text-gray-400 hover:text-white transition-colors"
         >
           <X size={24} />
@@ -191,7 +207,8 @@ const SeriesTorBoxDownload = ({ series, onClose }) => {
               alt={series.title}
               className="w-[260px] rounded-xl border-2 shadow-2xl"
               onError={(e) => {
-                e.target.src = "https://placehold.co/300x450/1e293b/fff?text=No+Poster";
+                e.target.src =
+                  "https://placehold.co/300x450/1e293b/fff?text=No+Poster";
               }}
             />
           </div>
@@ -201,13 +218,17 @@ const SeriesTorBoxDownload = ({ series, onClose }) => {
             <h2 className="text-2xl font-bold text-white">
               {getTorrentTitle()}
             </h2>
-            
-            <p className="text-gray-400 text-sm">{series.overview || "No synopsis available."}</p>
+
+            <p className="text-gray-400 text-sm">
+              {series.overview || "No synopsis available."}
+            </p>
 
             <div className="grid grid-cols-2 gap-3 bg-[#0f172a] p-4 rounded-xl border border-gray-700 text-sm">
               <div>
                 <span className="text-gray-500">Rating:</span>
-                <b className="text-yellow-400 ml-1">{series.vote_average || "0.0"}</b>
+                <b className="text-yellow-400 ml-1">
+                  {series.vote_average || "0.0"}
+                </b>
               </div>
               <div>
                 <span className="text-gray-500">Size:</span>
@@ -233,9 +254,12 @@ const SeriesTorBoxDownload = ({ series, onClose }) => {
               onClick={triggerTorBoxDownload}
             >
               {btnDisabled ? (
-                <><Loader size={18} className="animate-spin" />Download Processing...</>
+                <>
+                  <Loader size={18} className="animate-spin" />
+                  Download Processing...
+                </>
               ) : (
-                <><Cloud size={18} /> Cloud Unlock to High-Speed Download Link</>
+                <span>Cloud Unlock to High-Speed Download Link</span>
               )}
             </button>
 
@@ -251,7 +275,9 @@ const SeriesTorBoxDownload = ({ series, onClose }) => {
                 <div className="flex justify-between text-sm">
                   <div>
                     Download Status:{" "}
-                    <span style={{ color: engineStatusColor }}>{engineStatus}</span>
+                    <span style={{ color: engineStatusColor }}>
+                      {engineStatus}
+                    </span>
                   </div>
                   <div>
                     {timerReady ? (
@@ -259,7 +285,9 @@ const SeriesTorBoxDownload = ({ series, onClose }) => {
                     ) : (
                       <>
                         Wait For The Second:{" "}
-                        <span className="text-yellow-400 font-bold">{timerText}</span>
+                        <span className="text-yellow-400 font-bold">
+                          {timerText}
+                        </span>
                       </>
                     )}
                   </div>
@@ -287,7 +315,7 @@ const SeriesTorBoxDownload = ({ series, onClose }) => {
                     rel="noopener noreferrer"
                     className="w-full py-3 bg-green-600 hover:bg-green-700 rounded-xl text-white font-bold flex items-center justify-center gap-2 transition-all"
                   >
-                    <span >🎬 Click This Direct Download Link</span>
+                    <span>🎬 Click This Direct Download Link</span>
                   </a>
                 )}
               </div>
