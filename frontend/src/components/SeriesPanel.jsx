@@ -4,7 +4,7 @@ import axios from 'axios';
 import toast from 'react-hot-toast';
 import { Search, Download, Save, Star, Calendar, Tv, ExternalLink, Layers, Film, TrendingUp, Users, HardDrive, Filter, X } from 'lucide-react';
 
-const API_URL = 'http://localhost:5000/api';
+const API_URL = `${import.meta.env.VITE_API_URL}/api`;
 
 const SeriesPanel = () => {
     const [searchQuery, setSearchQuery] = useState('');

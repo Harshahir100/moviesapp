@@ -3,8 +3,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { X, Cloud, Play, Loader, Zap } from "lucide-react";
 import toast from "react-hot-toast";
 
-// ✅ API_URL should point to main backend (port 5000)
-const API_URL = "http://localhost:5000/api/torbox";
+const API_URL = `${import.meta.env.VITE_API_URL}/api/torbox`;
 
 const SeriesTorBoxDownload = ({ series, onClose }) => {
   const [btnDisabled, setBtnDisabled] = useState(false);
