@@ -4,7 +4,7 @@ import { X, Cloud, Play, Loader, Zap } from "lucide-react";
 import toast from "react-hot-toast";
 
 // ✅ CHANGE: API_URL should point to main backend (port 5000)
-const API_URL = "http://localhost:5000/api/torbox";
+fetch(`${import.meta.env.VITE_API_URL}/api/torbox/add`, 
 
 const TorBoxDownload = ({ movie, onClose }) => {
   const [btnDisabled, setBtnDisabled] = useState(false);
