@@ -481,7 +481,7 @@ const SeriesDetail = () => {
                                           className="flex items-center gap-1.5 px-3 py-1.5 bg-red-600 hover:bg-red-700 rounded-lg text-white text-xs font-medium transition-colors"
                                         >
                                           <Cloud size={13} />
-                                          <span>High-Speed</span>
+                                          <span>Download</span>
                                         </button>
                                       </div>
                                     </div>

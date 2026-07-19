@@ -65,7 +65,7 @@ const TorBoxDownload = ({ movie, onClose }) => {
         setIsCachedHit(true);
         setTimerReady(true);
         setEngineStatus("Download- checking status…");
-        toast.success("⚡ Existing torrent found! Fetching link…");
+        toast.success("Preparing your download link...");
         pollTorBoxStatus(data.torrent_id);
       } else {
         setIsCachedHit(false);
