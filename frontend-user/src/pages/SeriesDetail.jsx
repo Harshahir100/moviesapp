@@ -89,10 +89,10 @@ const SeriesDetail = () => {
       }
       const title = torrent?.title || torrent?.torrent_title || "";
       const titleLower = title.toLowerCase();
-      if (titleLower.includes('hindi') || titleLower.includes('hin')) {
+      if (titleLower.includes("hindi") || titleLower.includes("hin")) {
         return torrent?.is_hindi_dubbed ? "Hindi Dubbed" : "Hindi";
       }
-      if (titleLower.includes('english') || titleLower.includes('eng')) {
+      if (titleLower.includes("english") || titleLower.includes("eng")) {
         return "English";
       }
       if (torrent?.is_hindi_dubbed) {
@@ -118,7 +118,7 @@ const SeriesDetail = () => {
       language: getLanguage(),
       torrent_title: torrent.title || torrent.torrent_title,
     };
-    
+
     console.log("📤 Sending to TorBox (Series):", seriesData);
     setSelectedTorrent(seriesData);
     setShowTorBox(true);
@@ -210,7 +210,6 @@ const SeriesDetail = () => {
     { label: "Cast", value: starsValue },
     ...(series.creator ? [{ label: "Creator", value: series.creator }] : []),
     { label: "Size", value: allSizes },
-
 
     {
       label: "Quality",
@@ -452,18 +451,27 @@ const SeriesDetail = () => {
                                               `Episode ${episode.episode_number}`}
                                           </span>
                                           {torrent.quality && (
-                                            <span className={`px-1.5 py-0.5 text-[9px] font-bold rounded ${
-                                              torrent.quality === "4K" ? "bg-purple-600" :
-                                              torrent.quality === "1080p" ? "bg-red-600" :
-                                              torrent.quality === "720p" ? "bg-emerald-600" :
-                                              torrent.quality === "480p" ? "bg-amber-600" :
-                                              "bg-gray-600"
-                                            } text-white`}>
+                                            <span
+                                              className={`px-1.5 py-0.5 text-[9px] font-bold rounded ${
+                                                torrent.quality === "4K"
+                                                  ? "bg-purple-600"
+                                                  : torrent.quality === "1080p"
+                                                    ? "bg-red-600"
+                                                    : torrent.quality === "720p"
+                                                      ? "bg-emerald-600"
+                                                      : torrent.quality ===
+                                                          "480p"
+                                                        ? "bg-amber-600"
+                                                        : "bg-gray-600"
+                                              } text-white`}
+                                            >
                                               {torrent.quality}
                                             </span>
                                           )}
                                           {torrent.is_hindi_dubbed && (
-                                            <span className="text-[10px] text-emerald-400">🇮🇳 Hindi</span>
+                                            <span className="text-[10px] text-emerald-400">
+                                              🇮🇳 Hindi
+                                            </span>
                                           )}
                                         </div>
                                         <div className="flex flex-wrap items-center gap-3 mt-1 text-[10px] text-gray-400">
@@ -509,7 +517,6 @@ const SeriesDetail = () => {
         </div>
       )}
 
-
       {torrents.length > 0 && (
         <div className="mt-6">
           <h2 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
@@ -532,12 +539,17 @@ const SeriesDetail = () => {
                 className="mb-4 bg-[#1a1a2e] rounded-xl border border-gray-800 overflow-hidden"
               >
                 <div className="flex items-center space-x-3 px-4 py-2 bg-gray-800/50 border-b border-gray-800">
-                  <span className={`px-2 py-0.5 text-xs font-semibold rounded ${
-                    quality === "4K" ? "bg-purple-600" :
-                    quality === "1080p" ? "bg-red-600" :
-                    quality === "720p" ? "bg-green-600" :
-                    "bg-yellow-600"
-                  }`}>
+                  <span
+                    className={`px-2 py-0.5 text-xs font-semibold rounded ${
+                      quality === "4K"
+                        ? "bg-purple-600"
+                        : quality === "1080p"
+                          ? "bg-red-600"
+                          : quality === "720p"
+                            ? "bg-green-600"
+                            : "bg-yellow-600"
+                    }`}
+                  >
                     {quality}
                   </span>
                 </div>
@@ -572,7 +584,7 @@ const SeriesDetail = () => {
                             className="flex items-center space-x-1 px-3 py-1 bg-red-600 hover:bg-red-700 rounded text-white text-xs font-medium transition-colors"
                           >
                             <Cloud size={14} />
-                            <span>High-Speed</span>
+                            <span>Download</span>
                           </button>
                         </div>
                       </div>
@@ -588,77 +600,9 @@ const SeriesDetail = () => {
               No season pack torrents available
             </div>
           )}
-          {/* Season Pack torrents — image style layout */}
-          <div className="bg-[#12122a] border border-gray-800 rounded-2xl px-4 py-5 space-y-6">
-            {["4K", "1080p", "720p", "480p"].map((quality) => {
-              const qualityTorrents = torrents.filter(
-                (t) => t.quality === quality && t.torrent_type === "season"
-              );
-              if (qualityTorrents.length === 0) return null;
-
-              return qualityTorrents.map((torrent, index) => {
-                const torrentLabel =
-                  torrent.title || torrent.torrent_title || "Unknown Torrent";
-
-                return (
-                  <div
-                    key={torrent.id || `${quality}-${index}`}
-                    className="flex flex-col items-center gap-2"
-                  >
-                    {/* Title above button */}
-                    <p className="text-gray-300 text-sm text-center max-w-lg leading-snug">
-                      {torrentLabel}
-                    </p>
-
-                    {/* Big red Download button */}
-                    <button
-                      onClick={() =>
-                        openMagnet(torrent.magnet_link || torrent.magnetLink)
-                      }
-                      className="w-full max-w-md py-3.5 rounded-xl bg-[#e50914] hover:bg-red-700 active:scale-[0.98] text-white font-bold text-base tracking-wide transition-all flex items-center justify-center gap-2.5 shadow-lg shadow-[#e50914]/25"
-                    >
-                      <Download size={19} />
-                      Download
-                    </button>
-
-                    {/* Meta row below button */}
-                    <div className="flex items-center gap-3 text-xs">
-                      {torrent.size && (
-                        <span className="flex items-center gap-1 text-gray-400">
-                          <HardDrive size={12} />
-                          {torrent.size}
-                        </span>
-                      )}
-                      {torrent.quality && (
-                        <span className="text-gray-500 uppercase tracking-wider text-[10px] font-semibold">
-                          {torrent.quality}
-                        </span>
-                      )}
-                      {torrent.is_hindi_dubbed && (
-                        <span className="text-[#f5c518] font-semibold text-[11px] uppercase tracking-wide">
-                          IN Hindi Dubbed
-                        </span>
-                      )}
-                    </div>
-
-                    {/* Thin divider between entries */}
-                    <hr className="w-3/4 border-gray-800 mt-1" />
-                  </div>
-                );
-              });
-            })}
-
-            {/* No season packs fallback */}
-            {torrents.filter((t) => t.torrent_type === "season").length === 0 && (
-              <div className="text-center py-6 text-gray-400 text-sm">
-                No season pack torrents available
-              </div>
-            )}
-          </div>
         </div>
       )}
 
-      {/* TorBox Modal - Using SeriesTorBoxDownload */}
       {showTorBox && selectedTorrent && (
         <SeriesTorBoxDownload
           series={selectedTorrent}
