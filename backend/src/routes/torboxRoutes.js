@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 // backend/src/routes/torboxRoutes.js
 import express from 'express';
 import fetch from 'node-fetch';
@@ -202,7 +201,6 @@ router.get('/test', (req, res) => {
     message: 'TorBox routes are working!',
     apiKeySet: !!TORBOX_API_KEY
   });
-=======
 import express from 'express';
 import axios from 'axios';
 import dotenv from 'dotenv';
@@ -343,7 +341,6 @@ router.get('/link', async (req, res) => {
     } catch (error) {
         return res.status(500).json({ success: false, error: error.message });
     }
->>>>>>> 418b5cf (Fixed)
 });
 
 export default router;

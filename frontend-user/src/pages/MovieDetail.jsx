@@ -21,12 +21,9 @@ const MovieDetail = () => {
   const { id } = useParams();
   const [movie, setMovie] = useState(null);
   const [loading, setLoading] = useState(true);
-<<<<<<< HEAD
   const [showTorBox, setShowTorBox] = useState(false);
   const [selectedTorrent, setSelectedTorrent] = useState(null);
-=======
   const navigate = useNavigate(); // ✅
->>>>>>> 418b5cf (Fixed)
 
   useEffect(() => {
     fetchMovieDetails();
@@ -384,10 +381,8 @@ const MovieDetail = () => {
 
                       {/* TorBox High-Speed Download Button */}
                       <button
-<<<<<<< HEAD
                         onClick={() => openTorBox(torrent)}
                         className="w-full max-w-sm py-3 rounded-lg border-2 border-red-700 bg-red-600 hover:bg-red-700 text-white font-bold text-base tracking-wide transition-all flex items-center justify-center gap-2 shadow-md shadow-blue-600/20"
-=======
                         onClick={() => {
                           navigate("/download/torbox", {
                             state: {
@@ -404,9 +399,7 @@ const MovieDetail = () => {
                             },
                           });
                         }}
-                        className="w-full max-w-sm py-3 rounded-lg border-2 border-[#e50914] bg-[#e50914] hover:bg-red-700 hover:border-red-700 text-white font-bold text-base tracking-wide transition-all flex items-center justify-center gap-2 shadow-md shadow-[#e50914]/20"
->>>>>>> 418b5cf (Fixed)
-                      >
+                        className="w-full max-w-sm py-3 rounded-lg border-2 border-[#e50914] bg-[#e50914] hover:bg-red-700 hover:border-red-700 text-white font-bold text-base tracking-wide transition-all flex items-center justify-center gap-2 shadow-md shadow-[#e50914]/20">
                         <Cloud size={17} />
                         High-Speed Download
                       </button>

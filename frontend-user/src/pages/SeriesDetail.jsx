@@ -210,10 +210,8 @@ const SeriesDetail = () => {
     { label: "Cast", value: starsValue },
     ...(series.creator ? [{ label: "Creator", value: series.creator }] : []),
     { label: "Size", value: allSizes },
-<<<<<<< HEAD
-=======
 
->>>>>>> 418b5cf (Fixed)
+
     {
       label: "Quality",
       value: torrents[0]?.quality || "N/A",
@@ -511,11 +509,7 @@ const SeriesDetail = () => {
         </div>
       )}
 
-<<<<<<< HEAD
-      {/* Full Complete Season */}
-=======
-{/* ===== TORRENTS SECTION - ONLY SEASON PACKS ===== */}
->>>>>>> 418b5cf (Fixed)
+
       {torrents.length > 0 && (
         <div className="mt-6">
           <h2 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
@@ -526,7 +520,6 @@ const SeriesDetail = () => {
             </span>
           </h2>
 
-<<<<<<< HEAD
           {["4K", "1080p", "720p", "480p"].map((quality) => {
             const qualityTorrents = torrents.filter(
               (t) => t.quality === quality && t.torrent_type === "season",
@@ -595,7 +588,6 @@ const SeriesDetail = () => {
               No season pack torrents available
             </div>
           )}
-=======
           {/* Season Pack torrents — image style layout */}
           <div className="bg-[#12122a] border border-gray-800 rounded-2xl px-4 py-5 space-y-6">
             {["4K", "1080p", "720p", "480p"].map((quality) => {
@@ -663,7 +655,6 @@ const SeriesDetail = () => {
               </div>
             )}
           </div>
->>>>>>> 418b5cf (Fixed)
         </div>
       )}
 
