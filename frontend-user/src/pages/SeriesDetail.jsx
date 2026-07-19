@@ -210,6 +210,10 @@ const SeriesDetail = () => {
     { label: "Cast", value: starsValue },
     ...(series.creator ? [{ label: "Creator", value: series.creator }] : []),
     { label: "Size", value: allSizes },
+<<<<<<< HEAD
+=======
+
+>>>>>>> 418b5cf (Fixed)
     {
       label: "Quality",
       value: torrents[0]?.quality || "N/A",
@@ -507,10 +511,14 @@ const SeriesDetail = () => {
         </div>
       )}
 
+<<<<<<< HEAD
       {/* Full Complete Season */}
+=======
+{/* ===== TORRENTS SECTION - ONLY SEASON PACKS ===== */}
+>>>>>>> 418b5cf (Fixed)
       {torrents.length > 0 && (
         <div className="mt-6">
-          <h2 className="text-lg font-bold text-white mb-4 flex items-center space-x-2">
+          <h2 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
             <Download size={20} className="text-[#e50914]" />
             <span>Full Complete Season</span>
             <span className="text-sm text-gray-400 font-normal">
@@ -518,6 +526,7 @@ const SeriesDetail = () => {
             </span>
           </h2>
 
+<<<<<<< HEAD
           {["4K", "1080p", "720p", "480p"].map((quality) => {
             const qualityTorrents = torrents.filter(
               (t) => t.quality === quality && t.torrent_type === "season",
@@ -586,6 +595,75 @@ const SeriesDetail = () => {
               No season pack torrents available
             </div>
           )}
+=======
+          {/* Season Pack torrents — image style layout */}
+          <div className="bg-[#12122a] border border-gray-800 rounded-2xl px-4 py-5 space-y-6">
+            {["4K", "1080p", "720p", "480p"].map((quality) => {
+              const qualityTorrents = torrents.filter(
+                (t) => t.quality === quality && t.torrent_type === "season"
+              );
+              if (qualityTorrents.length === 0) return null;
+
+              return qualityTorrents.map((torrent, index) => {
+                const torrentLabel =
+                  torrent.title || torrent.torrent_title || "Unknown Torrent";
+
+                return (
+                  <div
+                    key={torrent.id || `${quality}-${index}`}
+                    className="flex flex-col items-center gap-2"
+                  >
+                    {/* Title above button */}
+                    <p className="text-gray-300 text-sm text-center max-w-lg leading-snug">
+                      {torrentLabel}
+                    </p>
+
+                    {/* Big red Download button */}
+                    <button
+                      onClick={() =>
+                        openMagnet(torrent.magnet_link || torrent.magnetLink)
+                      }
+                      className="w-full max-w-md py-3.5 rounded-xl bg-[#e50914] hover:bg-red-700 active:scale-[0.98] text-white font-bold text-base tracking-wide transition-all flex items-center justify-center gap-2.5 shadow-lg shadow-[#e50914]/25"
+                    >
+                      <Download size={19} />
+                      Download
+                    </button>
+
+                    {/* Meta row below button */}
+                    <div className="flex items-center gap-3 text-xs">
+                      {torrent.size && (
+                        <span className="flex items-center gap-1 text-gray-400">
+                          <HardDrive size={12} />
+                          {torrent.size}
+                        </span>
+                      )}
+                      {torrent.quality && (
+                        <span className="text-gray-500 uppercase tracking-wider text-[10px] font-semibold">
+                          {torrent.quality}
+                        </span>
+                      )}
+                      {torrent.is_hindi_dubbed && (
+                        <span className="text-[#f5c518] font-semibold text-[11px] uppercase tracking-wide">
+                          IN Hindi Dubbed
+                        </span>
+                      )}
+                    </div>
+
+                    {/* Thin divider between entries */}
+                    <hr className="w-3/4 border-gray-800 mt-1" />
+                  </div>
+                );
+              });
+            })}
+
+            {/* No season packs fallback */}
+            {torrents.filter((t) => t.torrent_type === "season").length === 0 && (
+              <div className="text-center py-6 text-gray-400 text-sm">
+                No season pack torrents available
+              </div>
+            )}
+          </div>
+>>>>>>> 418b5cf (Fixed)
         </div>
       )}
 

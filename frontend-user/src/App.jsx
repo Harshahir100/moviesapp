@@ -7,7 +7,7 @@ import Movies from './pages/Movies';
 import MovieDetail from './pages/MovieDetail';
 import Series from './pages/Series';
 import SeriesDetail from './pages/SeriesDetail';
-import Search from './pages/Search';  // Make sure this is imported
+import Search from './pages/Search';
 import Header from './components/common/Header';
 import Footer from './components/common/Footer';
 
@@ -16,16 +16,15 @@ function App() {
         <Router>
             <div className="min-h-screen bg-[#0a0a1a] text-white">
                 <Header />
-                <main className="pt-5">
+                <main className="pt-16">
                     <Routes>
                         <Route path="/" element={<Home />} />
                         <Route path="/movies" element={<Movies />} />
                         <Route path="/movie/:id" element={<MovieDetail />} />
                         <Route path="/series" element={<Series />} />
                         <Route path="/series/:id" element={<SeriesDetail />} />
-                        <Route path="/search" element={<Search />} />  {/* Add this line */}
+                        <Route path="/search" element={<Search />} />
                         <Route path="/category/:slug" element={<Movies />} />
-                        {/* Add a 404 route */}
                         <Route path="*" element={<NotFound />} />
                     </Routes>
                 </main>
@@ -46,7 +45,6 @@ function App() {
     );
 }
 
-// Simple 404 component
 const NotFound = () => {
     return (
         <div className="container mx-auto px-4 py-12 text-center">
