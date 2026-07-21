@@ -3,7 +3,7 @@ import React, { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import { getMovieDetails } from "../services/api";
 import LoadingSpinner from "../components/common/LoadingSpinner";
-import TorBoxDownload from "../components/TorBoxDownload";
+import TorBoxDownloadModal from "../components/common/TorBoxDownloadModal";
 import {
   Film,
   Star,
@@ -420,8 +420,9 @@ const MovieDetail = () => {
 
       {/* TorBox Modal */}
       {showTorBox && selectedTorrent && (
-        <TorBoxDownload
-          movie={selectedTorrent}
+        <TorBoxDownloadModal
+          media={selectedTorrent}
+          type="movie"
           onClose={() => {
             setShowTorBox(false);
             setSelectedTorrent(null);

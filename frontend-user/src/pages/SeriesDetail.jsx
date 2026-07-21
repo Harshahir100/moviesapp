@@ -3,7 +3,8 @@ import React, { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import { getSeriesDetails } from "../services/api";
 import LoadingSpinner from "../components/common/LoadingSpinner";
-import SeriesTorBoxDownload from "../components/SeriesTorBoxDownload"; // ✅ Changed
+import TorBoxDownloadModal from "../components/common/TorBoxDownloadModal";
+
 import {
   Star,
   Calendar,
@@ -604,8 +605,9 @@ const SeriesDetail = () => {
       )}
 
       {showTorBox && selectedTorrent && (
-        <SeriesTorBoxDownload
-          series={selectedTorrent}
+        <TorBoxDownloadModal
+          media={selectedTorrent}
+          type="series"
           onClose={() => {
             setShowTorBox(false);
             setSelectedTorrent(null);
