@@ -11,6 +11,9 @@ import Search from "./pages/Search";
 import Header from "./components/common/Header";
 import Footer from "./components/common/Footer";
 import ContactUs from "./pages/ContactUs";
+import RequestPage from "./pages/RequestPage";
+import Dmca from "./pages/Dmca";
+import AboutUs from "./pages/AboutUs";
 
 function App() {
   return (
@@ -27,7 +30,10 @@ function App() {
             <Route path="/search" element={<Search />} />
             <Route path="/category/:slug" element={<Movies />} />
             <Route path="*" element={<NotFound />} />
-            <Route path="/ContactUs" element={<Contact />} />
+            <Route path="/ContactUs" element={<ContactUs />} />{" "}
+            <Route path="/request" element={<RequestPage />} />
+            <Route path="/dmca" element={<Dmca />} />
+            <Route path="/about" element={<AboutUs />} />
           </Routes>
         </main>
         <Footer />

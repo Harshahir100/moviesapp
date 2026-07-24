@@ -2,7 +2,6 @@ import React from "react";
 import { Link } from "react-router-dom";
 import Contact from "../../pages/ContactUs";
 
-
 const Footer = () => {
   return (
     <footer className="w-full bg-[#0a0a0a] text-gray-400 font-sans py-8 border-t border-[#1a1a1a]">
@@ -10,7 +9,7 @@ const Footer = () => {
         {/* Copyright & Credits Line */}
         <div className="text-sm tracking-wide text-gray-400">
           Copyright © 2026. Created by{" "}
-          <span className="text-[#e50914]">❤️</span> FlixVega Team{" "}
+          <span className="text-[#e50914]">❤️</span> vegafilms Team{" "}
           <span className="text-[#e50914]">❤️</span>
         </div>
 
@@ -20,7 +19,7 @@ const Footer = () => {
         {/* Navigation Links with Emojis */}
         <div className="flex flex-wrap items-center justify-center gap-x-2 gap-y-2 text-base font-medium text-white">
           <Link
-            to="/contact"
+            to="/ContactUs"
             className="hover:text-red-500 transition-colors flex items-center gap-1.5"
           >
             <span>📮</span> Contact Us
@@ -51,13 +50,13 @@ const Footer = () => {
           </Link>
           <span className="text-gray-600">|</span>
 
-          <Link
+          {/* <Link
             to="/sitemap"
             className="hover:text-red-500 transition-colors flex items-center gap-1.5"
           >
             <span>📰</span> Sitemap
-          </Link>
-          <span className="text-gray-600">|</span>
+          </Link> */}
+          {/* <span className="text-gray-600">|</span> */}
         </div>
       </div>
     </footer>
