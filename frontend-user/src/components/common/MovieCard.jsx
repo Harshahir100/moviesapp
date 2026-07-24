@@ -1,9 +1,32 @@
 // frontend-user/src/components/common/MovieCard.jsx
 import React from "react";
 import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { Star, Film } from "lucide-react";
 
 const MovieCard = ({ movie }) => {
+  const navigate = useNavigate();
+
+  const handleMovieClick = (e) => {
+    e.preventDefault();
+
+    const key = `movie_click_${movie.id}`;
+
+    if (!localStorage.getItem(key)) {
+      localStorage.setItem(key, "1");
+
+      // 👇 Apna Adsterra Smartlink yahan paste karna
+      window.open(
+        "https://www.effectivecpmnetwork.com/pg2wg2y1c?key=d0bf263d9d00350b34c8b28d99993007",
+      );
+
+      return;
+    }
+
+    navigate(
+      movie.media_type === "tv" ? `/series/${movie.id}` : `/movie/${movie.id}`,
+    );
+  };
   // Safe data extraction
   const getYear = () => {
     if (!movie.release_date && !movie.first_air_date) return "N/A";
@@ -21,12 +44,13 @@ const MovieCard = ({ movie }) => {
     const num = parseFloat(movie.vote_average);
     return isNaN(num) ? null : num;
   };
-//   console.log(movie);
+  //   console.log(movie);
   return (
     <Link
       to={
         movie.media_type === "tv" ? `/series/${movie.id}` : `/movie/${movie.id}`
       }
+      onClick={handleMovieClick}
       className="block group"
     >
       <div className="bg-[#1a1a2e] rounded-xl overflow-hidden border border-gray-800 hover:border-[#e50914] transition-all hover:transform hover:-translate-y-1 hover:shadow-xl">

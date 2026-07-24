@@ -46,28 +46,37 @@ const MovieDetail = () => {
     toast.success("Opening magnet link...");
   };
 
-  const openTorBox = (torrent) => {
-    if (!movie || !torrent) return;
+const openTorBox = (torrent) => {
+  if (!movie || !torrent) return;
 
-    const movieData = {
-      id: movie.id,
-      title: movie.title,
-      poster_path: movie.poster_path,
-      overview: movie.overview,
-      release_date: movie.release_date,
-      vote_average: movie.vote_average,
-      magnet_link: torrent.magnet_link || torrent.magnetLink,
-      file_size_text: torrent.size,
-      quality: torrent.quality,
-      seeders: torrent.seeders,
-      leechers: torrent.leechers,
-      // ✅ ADDED: so TorBoxDownload can compute Language exactly like MovieDetail
-      original_language: movie.original_language,
-      is_hindi_dubbed: torrent.is_hindi_dubbed,
-    };
+  // Adsterra Smartlink
+  window.open(
+    "https://www.effectivecpmnetwork.com/pg2wg2y1c?key=d0bf263d9d00350b34c8b28d99993007",
+    "_blank"
+  );
+
+  const movieData = {
+    id: movie.id,
+    title: movie.title,
+    poster_path: movie.poster_path,
+    overview: movie.overview,
+    release_date: movie.release_date,
+    vote_average: movie.vote_average,
+    magnet_link: torrent.magnet_link || torrent.magnetLink,
+    file_size_text: torrent.size,
+    quality: torrent.quality,
+    seeders: torrent.seeders,
+    leechers: torrent.leechers,
+    original_language: movie.original_language,
+    is_hindi_dubbed: torrent.is_hindi_dubbed,
+  };
+
+  // 1.5 second baad TorBox modal open hoga
+  setTimeout(() => {
     setSelectedTorrent(movieData);
     setShowTorBox(true);
-  };
+  }, 1500);
+};
 
   const getVoteAverage = () => {
     if (movie?.vote_average == null) return "N/A";
