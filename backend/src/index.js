@@ -25,16 +25,18 @@ app.use(
     origin: [
       "https://vegafilms.in",
       "https://www.vegafilms.in",
-      "http://localhost:5173" // Local development
+      "https://admin.vegafilms.in",
+      "http://localhost:5173",
+      "https://moviesapp-3-qe48.onrender.com",
     ],
     credentials: true,
-  })
+  }),
 );
 
 // API Rate Limiter
 const apiLimiter = rateLimit({
   windowMs: 60 * 1000, // 1 minute
-  max: 400,            
+  max: 400,
   standardHeaders: true,
   legacyHeaders: false,
   message: {
