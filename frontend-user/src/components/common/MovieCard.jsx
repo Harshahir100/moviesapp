@@ -15,7 +15,6 @@ const MovieCard = ({ movie }) => {
     if (!localStorage.getItem(key)) {
       localStorage.setItem(key, "1");
 
-      // 👇 Apna Adsterra Smartlink yahan paste karna
       window.open(
         "https://www.effectivecpmnetwork.com/pg2wg2y1c?key=d0bf263d9d00350b34c8b28d99993007",
       );

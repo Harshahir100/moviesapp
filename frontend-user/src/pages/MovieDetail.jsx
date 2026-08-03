@@ -49,7 +49,6 @@ const MovieDetail = () => {
 const openTorBox = (torrent) => {
   if (!movie || !torrent) return;
 
-  // Adsterra Smartlink
   window.open(
     "https://www.effectivecpmnetwork.com/pg2wg2y1c?key=d0bf263d9d00350b34c8b28d99993007",
     "_blank"
